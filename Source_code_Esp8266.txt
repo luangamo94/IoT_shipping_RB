@@ -1,0 +1,116 @@
+#define BLYNK_PRINT Serial
+#define BLYNK_TEMPLATE_ID "TMPLptbUEnPe"
+#define BLYNK_DEVICE_NAME "ON"
+#define BLYNK_AUTH_TOKEN "A6yaZ29ZObiI51usHQrUvUYuo3NnXVPP"
+
+#include <Wire.h>
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+int x, y, z;
+int stt = 0;
+int trang_thai = 0;
+int ON = 0;
+int dem = 0;
+int des_A = 0;
+int des_B = 0;
+int des_C = 0;
+
+char auth[] = "A6yaZ29ZObiI51usHQrUvUYuo3NnXVPP";
+
+//TEN Wifi va Password
+//char ssid[] = "hahahahaha";
+//char pass[] = "11119999";
+
+char ssid[] = "L u a n";
+char pass[] = "999999999";
+
+//char ssid[] = "TP-LINK_2776";
+//char pass[] = "0392371201";
+
+//char ssid[] = "Redmi 7";
+//char pass[] = "12345678";
+
+//doc tin hieu cb vat can
+bool tin_hieu = 0;
+#define vat_can D5
+
+WidgetLED co_hang(V4);
+WidgetLED led_B(V5);
+WidgetLED led_C(V6);
+
+void setup()
+{
+  Serial.begin(115200);
+  Blynk.begin(auth, ssid, pass);
+  pinMode(vat_can, INPUT);
+  Wire.begin();
+}
+
+void loop()
+{
+  Blynk.run();
+
+  tin_hieu = digitalRead(vat_can);
+  if (tin_hieu == 0)
+  {
+    co_hang.on();
+  
+    }
+    else
+    {
+    co_hang.off();
+  
+    }
+  /*
+  if (Serial.available())
+  {
+    if (Serial.read() == 'N')
+    {
+      led_A.on();
+    }
+    else
+      led_A.off();
+  }
+  */
+}
+BLYNK_WRITE(V0)
+{
+  stt = param.asInt();
+  
+  if ((stt == 1) && (tin_hieu == 0))
+  {
+    ON = 1;
+    //Serial.write('a');
+    //trang_thai = digitalRead(light_ss);
+  }
+  else
+  {
+    Serial.write('S');
+  }
+}
+BLYNK_WRITE(V1)
+{
+  des_C = param.asInt();
+  if ((des_C == 1) && (ON == 1))
+  {
+    Serial.write('C');
+  }
+}
+BLYNK_WRITE(V2)
+{
+  des_B = param.asInt();
+  if ((des_B == 1) && (ON == 1))
+  {
+    Serial.write('B');
+  }
+}
+BLYNK_WRITE(V3)
+{
+  des_A = param.asInt();
+  if ((des_A == 1) && (ON == 1))
+  {
+    Serial.write('A');
+  }
+}
